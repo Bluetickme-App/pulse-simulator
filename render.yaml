@@ -1,0 +1,30 @@
+# Render Blueprint for MiroFish (Pulse Simulator)
+# Deploy via: Render Dashboard > New > Blueprint > point to this file
+#
+# This deploys MiroFish as a Docker service on Render
+# Frontend on port 3000, Backend on port 5001
+# Render routes external traffic to port 3000 (frontend)
+
+services:
+  - type: web
+    name: pulse-simulator
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: standard
+    region: frankfurt
+    envVars:
+      - key: ZEP_API_KEY
+        sync: false  # Set manually in Render dashboard
+      - key: LLM_BOOST_API_KEY
+        sync: false  # Our OpenAI key
+      - key: LLM_BOOST_BASE_URL
+        value: https://api.openai.com/v1
+      - key: LLM_BOOST_MODEL_NAME
+        value: gpt-4o
+      - key: PORT
+        value: "3000"
+    disk:
+      name: mirofish-uploads
+      mountPath: /app/backend/uploads
+      sizeGB: 1
